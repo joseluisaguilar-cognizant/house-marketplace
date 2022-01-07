@@ -1,5 +1,12 @@
 # House marketplace
 
+## Notes:
+
+- TypeScript
+- Firebase
+- useNavigate()
+- useLocation()
+
 ---
 
 # Getting Started with Create React App

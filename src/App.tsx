@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
 import Explore from './pages/Explore/Explore';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import Offers from './pages/Offers/Offers';
@@ -17,8 +18,8 @@ function App() {
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
         </Routes>
+        <Navbar />
       </Router>
-      {/* Navbar */}
     </>
   );
 }
