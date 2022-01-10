@@ -1,5 +1,12 @@
-import { ChangeEvent, FunctionComponent, useState } from 'react';
+import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+
 import { ReactComponent as ArrowRightIcon } from '../../assets/svg/keyboardArrowRightIcon.svg';
 import visibilityIcon from '../../assets/svg/visibilityIcon.svg';
 
@@ -27,6 +34,28 @@ const SignIn: FunctionComponent = () => {
     setFormData((prevValue: IFormData) => ({ ...prevValue, [name]: value }));
   };
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const auth = getAuth();
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      if (userCredential.user) {
+        navigate('/');
+      }
+
+      console.log('user', userCredential);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="pageContainer">
@@ -34,7 +63,7 @@ const SignIn: FunctionComponent = () => {
           <p className="pageHeader">Welcome Back!</p>
         </header>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <input
             type="email"
             name="email"
