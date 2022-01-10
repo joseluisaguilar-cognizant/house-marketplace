@@ -1,21 +1,34 @@
-import { ChangeEvent, FunctionComponent, useState } from 'react';
+import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  User,
+} from 'firebase/auth';
+import { setDoc, doc, serverTimestamp, FieldValue } from 'firebase/firestore';
+
+import { db } from '../../firebase.config';
+
 import { ReactComponent as ArrowRightIcon } from '../../assets/svg/keyboardArrowRightIcon.svg';
 import visibilityIcon from '../../assets/svg/visibilityIcon.svg';
 
 interface IFormData {
+  name: string;
   email: string;
   password: string;
+  timestamp?: FieldValue;
 }
 
-const SignIn: FunctionComponent = () => {
+const SignUp: FunctionComponent = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
   const [formData, setFormData] = useState<IFormData>({
+    name: '',
     email: '',
     password: '',
   });
 
-  const { email, password } = formData;
+  const { name, email, password } = formData;
 
   const navigate = useNavigate();
 
@@ -27,6 +40,37 @@ const SignIn: FunctionComponent = () => {
     setFormData((prevValue: IFormData) => ({ ...prevValue, [name]: value }));
   };
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      // ! "db" must be called to launch "initializeApp" from firebaseConfig
+
+      const auth = getAuth();
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = userCredential.user;
+
+      updateProfile(auth.currentUser as User, { displayName: name });
+
+      // Add user to the DB
+      const formDataCopy = { ...formData };
+      formDataCopy.password = '-';
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, 'users', user.uid), formDataCopy);
+
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="pageContainer">
@@ -34,7 +78,16 @@ const SignIn: FunctionComponent = () => {
           <p className="pageHeader">Welcome Back!</p>
         </header>
 
-        <form>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            className="nameInput"
+            placeholder="name"
+            value={name}
+            onChange={handleInputChange}
+          />
           <input
             type="email"
             name="email"
@@ -64,21 +117,21 @@ const SignIn: FunctionComponent = () => {
           <Link to="/forgot-password" className="forgotPasswordLink">
             Forgot Password
           </Link>
-          <div className="signInBar">
-            <p className="signInText">Sign In</p>
-            <button className="signInButton">
+          <div className="signUpBar">
+            <p className="signUpText">Sign Up</p>
+            <button className="signUpButton">
               <ArrowRightIcon fill="#fff" width="34px" height="34px" />
             </button>
           </div>
         </form>
 
         {/* Google OAuth */}
-        <Link to="/sign-up" className="registerLink">
-          Sign Up Instead
+        <Link to="/sign-in" className="registerLink">
+          Sign In Instead
         </Link>
       </div>
     </>
   );
 };
 
-export default SignIn;
+export default SignUp;
