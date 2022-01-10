@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -7,6 +8,7 @@ import {
   User,
 } from 'firebase/auth';
 import { setDoc, doc, serverTimestamp, FieldValue } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 import { db } from '../../firebase.config';
 
@@ -67,7 +69,7 @@ const SignUp: FunctionComponent = () => {
 
       navigate('/');
     } catch (error) {
-      console.log(error);
+      toast.error('Something went wrong with registration');
     }
   };
 
