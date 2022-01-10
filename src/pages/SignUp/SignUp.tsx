@@ -77,7 +77,7 @@ const SignUp: FunctionComponent = () => {
     <>
       <div className="pageContainer">
         <header>
-          <p className="pageHeader">Welcome Back!</p>
+          <p className="pageHeader">Welcome!</p>
         </header>
 
         <form onSubmit={handleSubmit}>
