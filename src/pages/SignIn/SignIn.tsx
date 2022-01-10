@@ -50,8 +50,6 @@ const SignIn: FunctionComponent = () => {
       if (userCredential.user) {
         navigate('/');
       }
-
-      console.log('user', userCredential);
     } catch (error) {
       toast.error('Bad user credentials');
     }

@@ -14,6 +14,7 @@ import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
 function App() {
+  console.log('mariano', process.env.REACT_APP_API_KEY);
   return (
     <>
       <Router>
