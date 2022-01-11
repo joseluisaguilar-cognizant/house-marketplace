@@ -12,6 +12,7 @@ import SignUp from './pages/SignUp/SignUp';
 
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import Category from './pages/Category/Category';
 
 function App() {
   console.log('mariano', process.env.REACT_APP_API_KEY);
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="" element={<Explore />} />
           <Route path="/offers" element={<Offers />} />
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/profile" element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
           </Route>
