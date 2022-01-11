@@ -15,9 +15,16 @@ import {
 
 import { db } from '../../firebase.config';
 import Spinner from '../../components/Spinner/Spinner';
+import ListingItem from '../../components/ListingItem/ListingItem';
+import ListingElem from '../../interfaces/ListingElem.interface';
+
+interface ListingElemDB {
+  id: string;
+  data: ListingElem;
+}
 
 const Category: FunctionComponent = () => {
-  const [listings, setListings] = useState<any[]>([]);
+  const [listings, setListings] = useState<ListingElemDB[]>([]);
   const [loading, setLoading] = useState(true);
 
   const params = useParams();
@@ -26,7 +33,7 @@ const Category: FunctionComponent = () => {
     fetchListings();
   }, []);
 
-  const fetchListings = async () => {
+  const fetchListings = async (): Promise<void> => {
     try {
       // Get reference
       const listingsRef = collection(db, 'listings');
@@ -75,8 +82,14 @@ const Category: FunctionComponent = () => {
         <>
           <main>
             <ul className="categoryListings">
-              {listings.map((listing) => {
-                return <h3 key={listing.id}>{listing.data.name}</h3>;
+              {listings.map((listing: ListingElemDB) => {
+                return (
+                  <ListingItem
+                    key={listing.id}
+                    id={listing.id}
+                    listing={listing.data}
+                  />
+                );
               })}
             </ul>
           </main>
