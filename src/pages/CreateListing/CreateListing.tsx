@@ -6,6 +6,9 @@ import {
   SyntheticEvent,
   ChangeEvent,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import {
   getStorage,
@@ -15,11 +18,12 @@ import {
 } from 'firebase/storage';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase.config';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+
 import { v4 as uuidv4 } from 'uuid';
+
 import Spinner from '../../components/Spinner/Spinner';
 import ListingElem from '../../interfaces/ListingElem.interface';
+import { storeImage } from './CreateListing.utils';
 
 interface IFormData {
   address: string;
@@ -103,9 +107,11 @@ function CreateListing() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted]);
 
-  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+
+    console.log(formData);
 
     if (discountedPrice >= regularPrice) {
       setLoading(false);
@@ -123,6 +129,20 @@ function CreateListing() {
 
     geolocation.lat = lat;
     geolocation.lng = lng;
+
+    // Store image in firebase
+
+    const imgUrls = await Promise.all(
+      [...Array.from(imgUrl)].map((img) =>
+        storeImage(auth, img).catch(() => {
+          setLoading(false);
+          toast.error('Images not uploaded');
+          return;
+        })
+      )
+    );
+
+    console.log(imgUrls);
 
     setLoading(false);
   };
