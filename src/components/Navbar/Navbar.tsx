@@ -46,7 +46,7 @@ const Navbar: FunctionComponent = () => {
           height="36px"
         />
       ),
-      text: 'Offer',
+      text: 'Offers',
       urlToNavigate: '/offers',
       id: 2,
     },

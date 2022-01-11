@@ -13,6 +13,7 @@ import SignUp from './pages/SignUp/SignUp';
 import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Category from './pages/Category/Category';
+import CreateListing from './pages/CreateListing/CreateListing';
 
 function App() {
   console.log('mariano', process.env.REACT_APP_API_KEY);
@@ -29,6 +30,7 @@ function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Routes>
         <Navbar />
       </Router>

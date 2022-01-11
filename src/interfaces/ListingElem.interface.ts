@@ -6,6 +6,7 @@ interface ListingGeo {
 }
 
 export default interface ListingElem {
+  address: string;
   bathrooms: number;
   bedrooms: number;
   discountedPrice: number;
@@ -17,7 +18,7 @@ export default interface ListingElem {
   offer: boolean;
   parking: boolean;
   regularPrice: number;
-  timestamp: Timestamp;
+  timestamp?: Timestamp;
   type: string;
-  userRef: string;
+  userRef?: string;
 }
