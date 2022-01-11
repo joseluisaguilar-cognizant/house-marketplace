@@ -21,11 +21,34 @@ import { v4 as uuidv4 } from 'uuid';
 import Spinner from '../../components/Spinner/Spinner';
 import ListingElem from '../../interfaces/ListingElem.interface';
 
+interface IFormData {
+  address: string;
+  type: 'rent' | 'sale';
+  name: string;
+  bedrooms: number;
+  bathrooms: number;
+  parking: boolean;
+  furnished: boolean;
+  offer: boolean;
+  regularPrice: number;
+  discountedPrice: number;
+  imgUrl: FileList;
+  lat: number;
+  lng: number;
+  location: string;
+  userRef: string;
+}
+
+interface IGeolocation {
+  lat: number;
+  lng: number;
+}
+
 function CreateListing() {
   // eslint-disable-next-line
   const [geolocationEnabled, setGeolocationEnabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<IFormData>({
     address: '',
     type: 'rent',
     name: '',
@@ -36,10 +59,11 @@ function CreateListing() {
     offer: false,
     regularPrice: 0,
     discountedPrice: 0,
-    imgUrl: {},
+    imgUrl: {} as FileList,
     lat: 0,
     lng: 0,
     location: '',
+    userRef: '',
   });
 
   const {
@@ -55,7 +79,7 @@ function CreateListing() {
     discountedPrice,
     lat,
     lng,
-    geolocation,
+    imgUrl,
   } = formData;
 
   const auth = getAuth();
@@ -81,8 +105,26 @@ function CreateListing() {
 
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
 
-    console.log('form', formData);
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error('Discounted price needs to be less than regular price');
+      return;
+    }
+
+    if (imgUrl.length > 6) {
+      setLoading(false);
+      toast.error('Max 6 images');
+      return;
+    }
+
+    let geolocation: IGeolocation = {} as IGeolocation;
+
+    geolocation.lat = lat;
+    geolocation.lng = lng;
+
+    setLoading(false);
   };
 
   const handleChange = (event: any) => {
@@ -101,7 +143,7 @@ function CreateListing() {
 
     // Files
     if (files) {
-      setFormData((prevState: ListingElem) => ({
+      setFormData((prevState: IFormData) => ({
         ...prevState,
         imgUrl: files,
       }));
@@ -109,7 +151,7 @@ function CreateListing() {
 
     // Text / Number / Booleans
     if (!files) {
-      setFormData((prevState: ListingElem) => {
+      setFormData((prevState: IFormData) => {
         return { ...prevState, [id]: boolean ?? value };
       });
     }
