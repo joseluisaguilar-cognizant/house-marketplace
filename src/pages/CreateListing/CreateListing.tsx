@@ -1,29 +1,15 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  FormEvent,
-  SyntheticEvent,
-  ChangeEvent,
-} from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from 'firebase/storage';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../firebase.config';
 
-import { v4 as uuidv4 } from 'uuid';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 import Spinner from '../../components/Spinner/Spinner';
-import ListingElem from '../../interfaces/ListingElem.interface';
 import { storeImage } from './CreateListing.utils';
+import ListingElem from '../../interfaces/ListingElem.interface';
+import { db } from '../../firebase.config';
 
 interface IFormData {
   address: string;
@@ -84,6 +70,7 @@ function CreateListing() {
     lat,
     lng,
     imgUrl,
+    userRef,
   } = formData;
 
   const auth = getAuth();
@@ -111,8 +98,6 @@ function CreateListing() {
     event.preventDefault();
     setLoading(true);
 
-    console.log(formData);
-
     if (discountedPrice >= regularPrice) {
       setLoading(false);
       toast.error('Discounted price needs to be less than regular price');
@@ -131,8 +116,7 @@ function CreateListing() {
     geolocation.lng = lng;
 
     // Store image in firebase
-
-    const imgUrls = await Promise.all(
+    const imgUrls: Array<string> = (await Promise.all(
       [...Array.from(imgUrl)].map((img) =>
         storeImage(auth, img).catch(() => {
           setLoading(false);
@@ -140,11 +124,9 @@ function CreateListing() {
           return;
         })
       )
-    );
+    )) as Array<string>;
 
-    console.log(imgUrls);
-
-    setLoading(false);
+    await saveNewListing(geolocation, imgUrls);
   };
 
   const handleChange = (event: any) => {
@@ -433,6 +415,34 @@ function CreateListing() {
       </main>
     </div>
   );
+
+  async function saveNewListing(geolocation: IGeolocation, imgUrls: string[]) {
+    const formDataCopy: ListingElem = {
+      address: address,
+      bathrooms: bathrooms,
+      bedrooms: bedrooms,
+      discountedPrice: discountedPrice,
+      furnished: furnished,
+      geolocation: geolocation,
+      imgUrls,
+      location: address,
+      name: name,
+      offer: offer,
+      parking: parking,
+      regularPrice: regularPrice,
+      timestamp: serverTimestamp(),
+      type: type,
+      userRef: userRef,
+    };
+
+    formDataCopy.location = address;
+
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy);
+
+    setLoading(false);
+    toast.success('Listing save');
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+  }
 }
 
 export default CreateListing;

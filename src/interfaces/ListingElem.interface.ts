@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 
 interface ListingGeo {
   lng: number;
@@ -18,7 +18,7 @@ export default interface ListingElem {
   offer: boolean;
   parking: boolean;
   regularPrice: number;
-  timestamp?: Timestamp;
+  timestamp?: FieldValue;
   type: string;
   userRef?: string;
 }
