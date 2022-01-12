@@ -15,9 +15,9 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Category from './pages/Category/Category';
 import CreateListing from './pages/CreateListing/CreateListing';
 import Listing from './pages/Listing/Listing';
+import Contact from './pages/Contact/Contact';
 
 function App() {
-  console.log('mariano', process.env.REACT_APP_API_KEY);
   return (
     <>
       <Router>
@@ -36,6 +36,7 @@ function App() {
             path="/category/:categoryName/:listingId"
             element={<Listing />}
           />
+          <Route path="/contact/:landlordId" element={<Contact />} />
         </Routes>
         <Navbar />
       </Router>
