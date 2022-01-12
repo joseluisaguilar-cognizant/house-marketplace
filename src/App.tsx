@@ -14,6 +14,7 @@ import Navbar from './components/Navbar/Navbar';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Category from './pages/Category/Category';
 import CreateListing from './pages/CreateListing/CreateListing';
+import Listing from './pages/Listing/Listing';
 
 function App() {
   console.log('mariano', process.env.REACT_APP_API_KEY);
@@ -31,6 +32,10 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route
+            path="/category/:categoryName/:listingId"
+            element={<Listing />}
+          />
         </Routes>
         <Navbar />
       </Router>
