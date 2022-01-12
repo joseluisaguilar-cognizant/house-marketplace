@@ -3,9 +3,12 @@
 ## Notes:
 
 - TypeScript
-- Firebase
+- Firebase: auth
+- Firebase: storage
+- Firebase: real time DB
 - useNavigate()
 - useLocation()
+- Leaflet (maps)
 
 ---
 

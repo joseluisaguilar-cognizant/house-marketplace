@@ -15,13 +15,13 @@ const Contact: FunctionComponent = () => {
 
   useEffect(() => {
     const getLandlord = async () => {
-      const docRef = doc(db, 'users', params.landlordId as string);
+      const docRef = doc(db, 'users', params.landlordId as any);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
         setLandlord(docSnap.data());
       } else {
-        toast.error('Could not get landlord id');
+        toast.error('Could not get landlord data');
       }
     };
 
